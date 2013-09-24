@@ -14,10 +14,12 @@ use constant USERNAME => 'USERNAME';
 use constant PASSWORD => 'PASSWORD';
 use constant UPLOAD_URL => 'URL';
 use constant FILENAME => 'FILENAME';
+use constant TIMEOUT => 30;
 
 my $websvc = WebService::FileCloud->new( akey => AKEY,
 					 username => USERNAME,
-					 password => PASSWORD );
+					 password => PASSWORD,
+					 timeout => TIMEOUT );
 
 warn( Dumper( $websvc->fetch_apikey() ) );
 warn( Dumper( $websvc->fetch_account_details() ) );

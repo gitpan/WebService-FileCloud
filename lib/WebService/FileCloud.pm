@@ -6,7 +6,7 @@ use warnings;
 use JSON;
 use LWP::UserAgent;
 
-our $VERSION = '0.1';
+our $VERSION = '0.2';
 
 use constant BASE_URI => 'http://api.filecloud.io/';
 use constant FETCH_APIKEY_URI => 'https://secure.filecloud.io/api-fetch_apikey.api';
