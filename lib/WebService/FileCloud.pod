@@ -81,10 +81,15 @@ Documentation for their API is available at L<https://code.google.com/p/fileclou
 
 =over 4
 
-=item new ( OPTIONS )
+=item new
 
 Creates a new B<WebService::FileCloud> object with the arguments given.  All arguments
 are optional, but may be required depending upon the API methods executed.
+
+  $websvc = WebService::FileCloud->new( akey => 'apikey',
+                                        username => 'username',
+                                        password => 'password',
+                                        timeout => 30 );
 
 =over 4
 
@@ -126,27 +131,66 @@ filecloud.io (which may also contain an error).
 Returns the API key associated to the account.  Both the B<username> and
 B<password> options must be given in the constructor.
 
+  $result = $websvc->fetch_apikey();
+
+  die( $websvc->error() ) if ( !$result );
+  die( $result->{'message'} ) if ( $result->{'status'} eq 'error' );
+
+  $akey = $result->{'akey'};  
+
 =head2 fetch_account_details
 
 Returns the details of the account.  The B<akey> option must be given in the
 constructor to execute this method.
+
+  $result = $websvc->fetch_account_details();
+
+  die( $websvc->error() ) if ( !$result );
+  die( $result->{'message'} ) if ( $result->{'status'} eq 'error' );
+
+  $is_premium = $result->{'is_premium'};
+  $user_email = $result->{'user_email'};
+  $premium_until = $result->{'premium_until'};
+  $user_id = $result->{'user_id'};
+  $user_name = $result->{'user_name'};
 
 =head2 ping
 
 Determines if the filecloud.io API is operational.  No arguments are necessary
 in the constructor to execute this method.
 
+  $result = $websvc->ping();
+
+  die( $websvc->error() ) if ( !$result );
+  $is_available = $result->{'message'} eq 'pong';
+
 =head2 fetch_upload_url
 
 Returns a URL to use when uploading a file.  No arguments are necessary in the
 constructor to execute this method.
 
-=head2 check_file ( OPTIONS )
+  $result = $websvc->fetch_upload_url();
+
+  die( $websvc->error() ) if ( !$result );
+  die( $result->{'message'} ) if ( $result->{'status'} eq 'error' );
+
+  $url = $result->{'upload_url'};
+
+=head2 check_file
 
 Determines if a file is available and returns basic information.  No arguments
 are necessary in the constructor to execute this method, but the B<ukey> option
 must be provided to this method.
 
+  $result = $websvc->check_file( ukey => 'filekey' );
+
+  die( $websvc->error() ) if ( !$result );
+  die( $result->{'message'} ) if ( $result->{'status'} eq 'error' );
+
+  $ukey = $result->{'ukey'};
+  $name = $result->{'name'};
+  $size = $result->{'size'};
+
 =over 4
 
 =item ukey =E<gt> FILEKEY
@@ -155,12 +199,22 @@ The unique key of the file.  This argument is required.
 
 =back
 
-=head2 fetch_file_details ( OPTIONS )
+=head2 fetch_file_details
 
 Returns the full details for a particular file.  The B<akey> option must be
 given in the constructor, and the B<ukey> option described below must be
 provided to this method.
 
+  $result = $websvc->fetch_file_details( ukey => 'filekey' );
+
+  die( $websvc->error() ) if ( !$result );
+  die( $result->{'message'} ) if ( $result->{'status'} eq 'error' );
+
+  $ukey = $result->{'ukey'};
+  $name = $result->{'name'};
+  $size = $result->{'size'};  
+  $mime = $result->{'mime'};
+
 =over 4
 
 =item ukey =E<gt> FILEKEY
@@ -169,13 +223,20 @@ The unique key of the file.  This argument is required.
 
 =back
 
-=head2 fetch_download_url ( OPTIONS )
+=head2 fetch_download_url
 
 Returns the URL to use in order to download the specified file.  The B<akey>
 option must be given in the constructor, and the B<ukey> option described
 below must be provided to this method.  This method is only available to
 premium account holders of filecloud.io.
 
+  $result = $websvc->fetch_download_url( ukey => 'filekey' );
+
+  die( $websvc->error() ) if ( !$result );
+  die( $result->{'message'} ) if ( $result->{'status'} eq 'error' );
+
+  $url = $result->{'download_url'};
+
 =over 4
 
 =item ukey =E<gt> FILEKEY
@@ -184,12 +245,24 @@ The unique key of the file.  This argument is required.
 
 =back
 
-=head2 upload_file ( OPTIONS )
+=head2 upload_file
 
-Uploads a file to the URL specified.  The upload url can be determined via
+Uploads a file to the URL specified.  An upload url can be determined via
 the B<fetch_upload_url()> method.  The B<akey> option must be given in the
 constructor, and the B<filename> and B<url> options described below must be
 provided to this method.
+
+  $result = $websvc->upload_file( filename => '/path/to/file',
+                                  url => 'uploadurl' );
+
+  die( $websvc->error() ) if ( !$result );
+  die( $result->{'message'} ) if ( $result->{'status'} eq 'error' );
+
+  $ukey = $result->{'ukey'};
+  $name = $result->{'name'};
+  $size = $result->{'size'};
+  $mime = $result->{'mime'};
+  $icon = $result->{'icon'};
 
 =over 4
 
@@ -203,11 +276,38 @@ The URL to upload the file to.  This argument is required.
 
 =back
 
-=head2 fetch_tag_details ( OPTIONS )
+=head2 fetch_tag_details
 
 Returns the details of the tag specified.  The B<akey> option must be
 given in the constructor, and the B<tkey> option described below must be
 provided to this method.
+
+  $result = $websvc->fetch_tag_details( tkey => 'tagkey' );
+
+  die( $websvc->error() ) if ( !$result );
+  die( $result->{'message'} ) if ( $result->{'status'} eq 'error' );
+
+  $tkey = $result->{'tag'}{'tkey'};
+  $name = $result->{'tag'}{'name'};
+  $id = $result->{'tag'}{'id'};
+  $user_id = $result->{'tag'}{'user_id'};
+  $ttype = $result->{'tag'}{'ttype'};
+  $ts_created = $result->{'tag'}{'ts_created'};
+
+  @files = values( %{$result->{'files'}} );
+
+  foreach $file ( @files ) {
+
+    $ukey = $file->{'ukey'};
+    $name = $file->{'name'};
+    $size = $file->{'size'};
+    $mime = $file->{'mime'};
+    $url = $file->{'url'};
+    $atype = $file->{'atype'};
+    $order = $file->{'order'};
+    $dl = $file->{'dl'};
+    $ts_created = $file->{'ts_created'};
+  }
 
 =over 4
 
@@ -222,6 +322,8 @@ The unique key of the tag.  This argument is required.
 Returns an error string for the last error encountered.  This only
 contains internal errors related to HTTP requests and not errors from
 the filecloud.io API itself.
+
+  $error = $websvc->error() if ( !$result );
 
 =head1 SEE ALSO
 

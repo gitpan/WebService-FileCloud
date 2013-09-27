@@ -1,5 +1,5 @@
 ---
-abstract: unknown
+abstract: 'filecloud.io WebService API'
 author:
   - 'Mitch McCracken <mrmccrac@gmail.com>'
 build_requires:
@@ -20,6 +20,7 @@ no_index:
     - t
     - inc
 requires:
+  HTTP::Message: 0
   JSON: 0
   LWP::UserAgent: 0
-version: 0.2
+version: 0.3

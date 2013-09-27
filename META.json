@@ -1,5 +1,5 @@
 {
-   "abstract" : "unknown",
+   "abstract" : "filecloud.io WebService API",
    "author" : [
       "Mitch McCracken <mrmccrac@gmail.com>"
    ],
@@ -34,11 +34,12 @@
       },
       "runtime" : {
          "requires" : {
+            "HTTP::Message" : "0",
             "JSON" : "0",
             "LWP::UserAgent" : "0"
          }
       }
    },
    "release_status" : "stable",
-   "version" : "0.2"
+   "version" : "0.3"
 }
